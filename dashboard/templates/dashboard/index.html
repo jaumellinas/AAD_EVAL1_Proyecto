@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard de películas</title>
+
+    {% load static %}
+    <link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <section class="hero is-hero-bar">
+            <div class="hero-body">
+                <div class="level">
+                    <div class="level-left">
+                        <div class="level-item">
+                            <h1 class="title">
+                                Películas
+                            </h1>
+                        </div>
+                    </div>
+                    <div class="level-right" style="display: none;">
+                        <div class="level-item"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section is-main-section">
+            <div class="tile is-ancestor">
+                <div class="tile is-parent">
+                    <div class="card tile is-child">
+                        <div class="card-content">
+                            <div class="level is-mobile">
+                                <div class="level-item">
+                                    <div class="is-widget-label">
+                                        <h3 class="subtitle is-spaced">
+                                            Clientes
+                                        </h3>
+                                        <h1 class="title">
+                                            {{ customers }}
+                                        </h1>
+                                    </div>
+                                </div>
+                                <div class="level-item has-widget-icon">
+                                    <div class="is-widget-icon">
+                                        <span class="icon has-text-primary is-large">
+                                            <i class="mdi mdi-account-multiple mdi-48px"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tile is-parent">
+                    <div class="card tile is-child">
+                        <div class="card-content">
+                            <div class="level is-mobile">
+                                <div class="level-item">
+                                    <div class="is-widget-label">
+                                        <h3 class="subtitle is-spaced">
+                                            Películas
+                                        </h3>
+                                        <h1 class="title">
+                                            {{ films }}
+                                        </h1>
+                                    </div>
+                                </div>
+                                <div class="level-item has-widget-icon">
+                                    <div class="is-widget-icon">
+                                        <span class="icon has-text-info is-large">
+                                            <i class="mdi mdi-movie-open-outline mdi-48px"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tile is-parent">
+                    <div class="card tile is-child">
+                        <div class="card-content">
+                            <div class="level is-mobile">
+                                <div class="level-item">
+                                    <div class="is-widget-label">
+                                        <h3 class="subtitle is-spaced">
+                                            Total de pagos
+                                        </h3>
+                                        <h1 class="title">
+                                            {{ payments }} €
+                                        </h1>
+                                    </div>
+                                </div>
+                                <div class="level-item has-widget-icon">
+                                    <div class="is-widget-icon">
+                                        <span class="icon has-text-success is-large">
+                                            <i class="mdi mdi-currency-eur mdi-48px"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column is-half">
+                    <div class="card">
+                        <header class="card-header">
+                            <p class="card-header-title">
+                                <span class="icon"><i class="mdi mdi-filmstrip"></i></span>
+                                Nº de películas por categoría
+                            </p>
+                        </header>
+                        <div class="card-content">
+                            <div class="chart-area">
+                                <canvas id="grafico-1"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-half">
+                    <div class="card">
+                        <header class="card-header">
+                            <p class="card-header-title">
+                                <span class="icon"><i class="mdi mdi-finance"></i></span>
+                                Ingresos mensuales (expresado en €)
+                            </p>
+                        </header>
+                        <div class="card-content">
+                            <div class="chart-area">
+                                <canvas id="grafico-2"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column is-half">
+                    <div class="card">
+                        <header class="card-header">
+                            <p class="card-header-title">
+                                <span class="icon"><i class="mdi mdi-arrow-top-right-bold-box-outline"></i></span>
+                                Películas más alquiladas (expresado en €)
+                            </p>
+                        </header>
+                        <div class="card-content">
+                            <div class="chart-area">
+                                <canvas id="grafico-3"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-half">
+                    <div class="card">
+                        <header class="card-header">
+                            <p class="card-header-title">
+                                <span class="icon"><i class="mdi mdi-earth"></i></span>
+                                Nº de clientes por país (Top 10)
+                            </p>
+                        </header>
+                        <div class="card-content">
+                            <div class="chart-area">
+                                <canvas id="grafico-4"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="text/javascript" src="static/js/main.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script id="data-categories" type="application/json">{{ categories|default:'[]'|safe }}</script>
+    <script id="data-movies" type="application/json">{{ movies|default:'[]'|safe }}</script>
+    <script id="data-months" type="application/json">{{ months|default:'[]'|safe }}</script>
+    <script id="data-revenue" type="application/json">{{ revenue|default:'[]'|safe }}</script>
+    <script id="data-top-films" type="application/json">{{ top_films|default:'[]'|safe }}</script>
+    <script id="data-top-revenue" type="application/json">{{ top_revenue|default:'[]'|safe }}</script>
+    <script id="data-countries" type="application/json">{{ countries|default:'[]'|safe }}</script>
+    <script id="data-clients" type="application/json">{{ clients|default:'[]'|safe }}</script>
+
+    <script src="{% static 'js/chart.sample.js' %}"></script>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                © 2025 por <b>Jaume Llinàs</b>. Hecho para la asignatura de <b>Accés a Dades</b>.
+                Código fuente <a href="https://www.github.com/jaumellinas" target="_blank">disponible en GitHub</a>.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

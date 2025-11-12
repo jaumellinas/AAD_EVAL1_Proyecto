@@ -1,0 +1,119 @@
+# AAD_EVAL1_Proyecto
+
+**Conector MariaDB**  
+Acceso a Datos — 2º DAM  
+Jaume Llinàs Sansó
+
+## Estructura del proyecto
+
+```
+AAD_EVAL1_Proyecto/
+├── conectorMariaDB/
+│   ├── templates/
+│   │   └── index.html
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── views.py
+│   └── wsgi.py
+├── dashboard/
+│   ├── migrations/
+│   │   └── __init__.py
+│   ├── static/
+│   │   ├── css/
+│   │   │   ├── main.css
+│   │   │   └── main.min.css
+│   │   └── js/
+│   │       ├── chart.sample.js
+│   │       ├── main.js
+│   │       └── main.min.js
+│   ├── templates/
+│   │   └── dashboard/
+│   │       └── index.html
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── visor/
+│   ├── migrations/
+│   │   └── __init__.py
+│   ├── templates/
+│   │   └── visor/
+│   │       └── index.html
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── README.md
+├── __init__.py
+└── manage.py
+```
+
+## Descripción general
+
+Este proyecto consiste en conseguir que una aplicación creada por nosotros se a una base de datos MariaDB y manejar dichos datos. En nuestro caso hemos creado dos apps: **un dashboard** y **un visor de tablas en HTML**.
+
+En el **dashboard**, se definen consultas en el backend que luego son plasmadas en el frontend en forma de entero o de gráfico. En nuestro caso, hay consultas que sólo retornan un valor (como en el caso del número de clientes o de películas) o que retornan varios (que son procesados como gráficos gracias a Chart.js).
+
+En cambio, en el **visor de tablas** se itera sobre todas las tablas de una base de datos y sobre todas las columnas y filas de dichas tablas. Con esto conseguimos mostrar toda la información de todas las tablas de una base de datos concreta sin tener que tocar el código cada vez que la BBDD cambia.
+
+Para ambas apps se usa una base de datos de muestra llamada [sakila](https://dev.mysql.com/doc/sakila/en/). No obstante, el código del visor de tablas es reutilizable para otras bases de datos. Lo único que hará falta es modificar los valores de conexión a la base de datos del archivo `.env`.
+
+> [!NOTE]  
+> Nuestras apps están escritas en **Django**, un framework de **Python**.
+
+## Requisitos
+* Python 3.12+
+  * Django
+  * Librería de MariaDB
+  * loadenv
+
+> [!IMPORTANT]  
+> Esta guía de instalación asume que el usuario **ya dispone de una base de datos a la que conectarse**. Por tanto, toda la parte de instalación de MariaDB y el volcado de las bases de datos al programa es omitida.
+
+## Despliegue en local
+Para documentar el despliegue de nuestras apps, asumiremos que el usuario no tiene ninguno de nuestros requisitos instalados. 
+
+El proceso para llevar a cabo el despliegue en local consiste en: 
+1. Instalar la última versión de [Python](https://www.python.org/downloads/).
+2. Instalar el [conector para C de MariaDB](https://mariadb.com/docs/connectors/mariadb-connector-c/mariadb-connector-c-guide).
+3. Clonamos nuestro proyecto de GitHub en la máquina.
+4. Abrimos una terminal y navegamos hasta el directorio donde se encuentra nuestra app. 
+5. En dicho directorio, creamos un `venv` y lo activamos.
+6. Instalamos los requisitos con `pip install -r requirements.txt`
+7. Rellenamos el archivo .env del proyecto con las variables necesarias.
+8. Ejecutamos el comando `python manage.py runserver`.
+
+## Despliegue a entorno cloud
+De forma extra y siendo realizada esta parte tras haber acabado la actividad en sí, he intentado desplegar esta misma aplicación en algún servicio “serverless” como Vercel o Heroku. No obstante, el módulo `mariadb` de Python suele dar problemas con este tipo de servicios al depender del módulo escrito en C de MariaDB. Por tanto, al no tener la posibilidad de poder instalar módulos en las máquinas que corren nuestro servicio, he tenido que optar por otra solución.
+
+Para no tener que reeditar el código ni tener que usar módulos como `SQLAlchemy`, he optado por desplegar mi aplicación en una máquina virtual de Azure, usando los créditos gratuitos que nos proporciona Sant Josep.
+
+El proceso para llevar a cabo el despliegue es muy sencillo: 
+1. Creamos la máquina virtual y nos conectamos a ella por SSH.
+2. Clonamos nuestro proyecto de GitHub en la máquina.
+3. Instalamos `python` y `libmariadb-dev` con `apt`.
+4. Abrimos el directorio donde se encuentra nuestra app, creamos un `venv` y lo activamos.
+5. Instalamos los requisitos con `pip install -r requirements.txt`
+6. Rellenamos el archivo .env del proyecto con las variables necesarias.
+7. Ejecutamos `gunicorn` con el comando de abajo.
+
+### Código para ejecutar `gunicorn`
+```
+/home/azureuser/AAD_EVAL1_Proyecto/conectorMariaDB/bin/gunicorn conectorMariaDB.wsgi:application \
+  --bind 0.0.0.0:443 \
+  --certfile=/etc/ssl/cloudflare/origin.pem \
+  --keyfile=/etc/ssl/cloudflare/origin.key
+```
+
+Con Azure conectado a Cloudflare (que es el servicio que yo uso para gestionar mi dominio) y con los certificados SSL ya generados por este, podremos conectarnos a la aplicación [a través de este enlace](https://1.aad.jaume.wtf/).
+
+## Uso de IA y otros recursos
+Este proyecto ha sido mayoritariamente elaborado guiándome por posts de foros del estilo StackOverflow, así como guías de Django como la de W3Schools. No obstante, para funciones específicas como la sintaxis de la librería de MariaDB para Python o el afinado de ciertos elementos de CSS se ha usado la inteligencia artificial Claude a modo de corrector, pasándole el script entero y comentando (no corrigiendo directamente) las partes que no le gustaban.

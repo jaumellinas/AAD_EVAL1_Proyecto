@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <title>{{ db_name }} | Visor de BBDD</title>
+    <style>
+        html {
+            font-family: 'Inter', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        a:hover {
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .table-container-wrapper { display: none; }
+        .table-container-wrapper.is-active { display: block; }
+
+        .panel-tabs {
+            overflow-x: auto;
+            white-space: nowrap;
+            display: block;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .panel-tabs::-webkit-scrollbar,
+        .table-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .footer-custom {
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <nav class="panel">
+            <p class="panel-heading">{{ db_name }}</p>
+            <p class="panel-tabs">
+                {% for table_name, table_data in data.items %}
+                    <a class="table-tab {% if forloop.first %}is-active{% endif %}" data-table="{{ table_name }}">
+                        {{ table_name }}
+                    </a>
+                {% endfor %}
+            </p>
+        </nav>
+
+        {% for table_name, table_data in data.items %}
+            <div class="table-container-wrapper {% if forloop.first %}is-active{% endif %}" id="table-{{ table_name }}">
+                <div class="box">
+                    <h2 class="title is-4">{{ table_name }}</h2>
+
+                    {% if table_data.rows %}
+                        <div class="table-container">
+                            <table class="table is-striped is-hoverable is-fullwidth">
+                                <thead>
+                                <tr>
+                                    {% for column in table_data.columns %}
+                                        <th>{{ column }}</th>
+                                    {% endfor %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for row in table_data.rows %}
+                                    <tr>
+                                        {% for value in row %}
+                                            <td>{{ value }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="notification is-warning">
+                            No hay datos en esta tabla.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="box footer-custom has-text-centered">
+            <p>© 2025 por <b>Jaume Llinàs</b>. Hecho para la asignatura de <b>Accés a Dades</b>.
+                Código fuente <a href="https://www.github.com/jaumellinas" target="_blank">disponible en GitHub</a>.
+            </p>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.table-tab');
+    const tableContainers = document.querySelectorAll('.table-container-wrapper');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetTable = tab.getAttribute('data-table');
+
+            tabs.forEach(t => t.classList.remove('is-active'));
+            tab.classList.add('is-active');
+
+            tableContainers.forEach(container => {
+                container.classList.remove('is-active');
+            });
+
+            document.getElementById(`table-${targetTable}`).classList.add('is-active');
+        });
+    });
+});
+</script>
+</body>
+</html>
