@@ -74,9 +74,18 @@ Para ambas apps se usa una base de datos de muestra llamada [sakila](https://dev
   * Django
   * Librería de MariaDB
   * loadenv
+  * Gunicorn (sólo en despliegue cloud)
 
 > [!IMPORTANT]  
 > Esta guía de instalación asume que el usuario **ya dispone de una base de datos a la que conectarse**. Por tanto, toda la parte de instalación de MariaDB y el volcado de las bases de datos al programa es omitida.
+
+## Variables .env
+* MARIADB_USER
+* MARIADB_PASSWORD
+* MARIADB_HOST
+* MARIADB_PORT
+* MARIADB_DATABASE
+* DJANGO_SECRET_KEY
 
 ## Despliegue en local
 Para documentar el despliegue de nuestras apps, asumiremos que el usuario no tiene ninguno de nuestros requisitos instalados. 
@@ -102,18 +111,19 @@ El proceso para llevar a cabo el despliegue es muy sencillo:
 3. Instalamos `python` y `libmariadb-dev` con `apt`.
 4. Abrimos el directorio donde se encuentra nuestra app, creamos un `venv` y lo activamos.
 5. Instalamos los requisitos con `pip install -r requirements.txt`
-6. Rellenamos el archivo .env del proyecto con las variables necesarias.
-7. Ejecutamos `gunicorn` con el comando de abajo.
+6. (Sólo para cloud) Instalamos `gunicorn` (servidor web más robusto) con `pip install gunicorn`.
+7. Rellenamos el archivo .env del proyecto con las variables necesarias.
+8. Ejecutamos `gunicorn` con el comando de abajo.
 
 ### Código para ejecutar `gunicorn`
 ```
-/home/azureuser/AAD_EVAL1_Proyecto/conectorMariaDB/bin/gunicorn conectorMariaDB.wsgi:application \
+$(pwd)/.venv/bin/gunicorn conectorMariaDB.wsgi:application \
   --bind 0.0.0.0:443 \
   --certfile=/etc/ssl/cloudflare/origin.pem \
   --keyfile=/etc/ssl/cloudflare/origin.key
 ```
 
-Con Azure conectado a Cloudflare (que es el servicio que yo uso para gestionar mi dominio) y con los certificados SSL ya generados por este, podremos conectarnos a la aplicación [a través de este enlace](https://1.aad.jaume.wtf/).
+Con Azure conectado a Cloudflare (que es el servicio que yo uso para gestionar mi dominio) y con los certificados SSL ya generados por este, podremos conectarnos a la aplicación [a través de este enlace](https://aad1.jaume.wtf/).
 
 ## Uso de IA y otros recursos
 Este proyecto ha sido mayoritariamente elaborado guiándome por posts de foros del estilo StackOverflow, así como guías de Django como la de W3Schools. No obstante, para funciones específicas como la sintaxis de la librería de MariaDB para Python o el afinado de ciertos elementos de CSS se ha usado la inteligencia artificial Claude a modo de corrector, pasándole el script entero y comentando (no corrigiendo directamente) las partes que no le gustaban.
