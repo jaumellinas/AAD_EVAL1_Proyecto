@@ -12,6 +12,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <style>
+        html {
+            font-family: 'Inter', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        a:hover {
+            font-weight: bold;
+            transition: 0.3s;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -163,7 +180,7 @@
                 const el = document.getElementById(id);
                 return el ? JSON.parse(el.textContent) : [];
             }
-        
+
             const categories = getJSON("data-categories");
             const movies = getJSON("data-movies");
             const months = getJSON("data-months");
@@ -221,7 +238,7 @@
         <div class="content has-text-centered">
             <p>
                 © 2025 por <b>Jaume Llinàs</b>. Hecho para la asignatura de <b>Accés a Dades</b>.
-                Código fuente <a href="https://www.github.com/jaumellinas" target="_blank">disponible en GitHub</a>.
+                Código fuente <a href="https://github.com/jaumellinas/AAD_EVAL1_Proyecto" target="_blank">disponible en GitHub</a>.
             </p>
         </div>
     </footer>

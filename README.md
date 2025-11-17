@@ -20,14 +20,6 @@ AAD_EVAL1_Proyecto/
 ├── dashboard/
 │   ├── migrations/
 │   │   └── __init__.py
-│   ├── static/
-│   │   ├── css/
-│   │   │   ├── main.css
-│   │   │   └── main.min.css
-│   │   └── js/
-│   │       ├── chart.sample.js
-│   │       ├── main.js
-│   │       └── main.min.js
 │   ├── templates/
 │   │   └── dashboard/
 │   │       └── index.html
@@ -115,15 +107,26 @@ El proceso para llevar a cabo el despliegue es muy sencillo:
 7. Rellenamos el archivo .env del proyecto con las variables necesarias.
 8. Ejecutamos `gunicorn` con el comando de abajo.
 
-### Código para ejecutar `gunicorn`
 ```
-$(pwd)/.venv/bin/gunicorn conectorMariaDB.wsgi:application \
+sudo $(pwd)/.venv/bin/gunicorn conectorMariaDB.wsgi:application \
+  --bind 0.0.0.0:80 \
+```
+
+Con este comando gunicorn empezará a servir nuestra app a través del puerto 80 de nuestra máquina virtual. Es importante recordar abrir el puerto correspondiente en la consola de administración de Azure.
+
+En mi caso, al querer servir la aplicación a través de HTTPS, ejecutaré el mismo comando de antes cambiando el puerto 80 por el 443 y haciendo referencia a los certificados SSL que usará mi máquina virtual para cifrar el tráfico. 
+
+```
+sudo $(pwd)/.venv/bin/gunicorn conectorMariaDB.wsgi:application \
   --bind 0.0.0.0:443 \
   --certfile=/etc/ssl/cloudflare/origin.pem \
   --keyfile=/etc/ssl/cloudflare/origin.key
 ```
 
-Con Azure conectado a Cloudflare (que es el servicio que yo uso para gestionar mi dominio) y con los certificados SSL ya generados por este, podremos conectarnos a la aplicación [a través de este enlace](https://aad1.jaume.wtf/).
+> [!NOTE]  
+> El certificado que yo referencio me ha sido generado por Cloudflare siguiendo [este tutorial](https://developers.cloudflare.com/ssl/origin-configuration/origin-ca/). Evidentemente, mi certificado está generado por Cloudlare porque es el servicio con el que **yo** gestiono mis dominios. En caso de querer realizar este mismo paso con otro proveedor, muy seguramente los pasos a seguir diferirán de los del tutorial referenciado.
+
+Con Azure conectado a Cloudflare y con los certificados SSL ya generados por este, podremos conectarnos a mi instancia de la aplicación [a través de este enlace](https://aad1.jaume.wtf/).
 
 ## Uso de IA y otros recursos
-Este proyecto ha sido mayoritariamente elaborado guiándome por posts de foros del estilo StackOverflow, así como guías de Django como la de W3Schools. No obstante, para funciones específicas como la sintaxis de la librería de MariaDB para Python o el afinado de ciertos elementos de CSS se ha usado la inteligencia artificial Claude a modo de corrector, pasándole el script entero y comentando (no corrigiendo directamente) las partes que no le gustaban.
+Este proyecto ha sido mayoritariamente elaborado guiándome por posts de foros del estilo StackOverflow, así como guías de Django como la de W3Schools. No obstante, para funciones específicas como la sintaxis de la librería de MariaDB para Python o el afinado de ciertos elementos de CSS con Bulma se ha usado la inteligencia artificial Claude a modo de corrector, pasándole el script entero y comentando (no corrigiendo directamente) las partes que no le gustaban.
